@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-2">
+
+  </div>
+  <div class="col-8">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Project Name</th>
+          <th scope="col">Owner</th>
+          <th scope="col">Last Modified</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let project of projects;let i = index" >
+          <th scope="row">{{i+1}}</th>
+          <td><a [routerLink]="['/edit/', project.id]">{{project.name}}</a></td>
+          <td>{{project.owner}}</td>
+          <td>{{project.modified}}</td>
+        </tr>       
+      </tbody>
+      </table>
+  </div>
+  <div class="col-2">
+
+  </div>
+</div>

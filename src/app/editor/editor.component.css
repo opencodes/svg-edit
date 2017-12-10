@@ -1,0 +1,26 @@
+  #sidebar-wrapper {
+      z-index: 6;
+      position: absolute;
+      left: 250px;
+      width: 250px;
+      height: 100%;
+      margin-left: -250px;
+      overflow-y: auto;
+      background: #000;
+      -webkit-transition: all 0.5s ease;
+      -moz-transition: all 0.5s ease;
+      -o-transition: all 0.5s ease;
+      transition: all 0.5s ease;
+      padding: 20px 5px;
+  }
+  .sidebar-toggle {
+      height: 100%;
+      width: 20px;
+      background-color: #000;
+      color: #fff;
+      padding: 50px 3px;
+      position: absolute;
+      left: 0px;
+      top: 56px;
+      z-index: 6;
+  }
