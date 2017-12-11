@@ -38,7 +38,7 @@ export class EditorComponent implements OnInit {
     script.src = '../../assets/js/graph-creator.js';
     script.async = true;
     script.defer = true;
-    body.setAttribute('class', 'graph-paper');
+    // body.setAttribute('class', 'graph-paper');
     body.appendChild(script);
     // let ctx = this;
 

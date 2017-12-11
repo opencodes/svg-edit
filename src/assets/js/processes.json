@@ -12,38 +12,38 @@
   "Value": "Stop"
 }, {
   "Key": 3,
-  "Value": "Land on Estate"
+  "Value": "GIT"
 }, {
   "Key": 4,
-  "Value": "If"
+  "Value": "SVN"
 }, {
   "Key": 6,
-  "Value": "Else"
+  "Value": "Java"
 }, {
   "Key": 7,
-  "Value": "Pass Go"
+  "Value": "Angular 4"
 }, {
   "Key": 8,
-  "Value": "Collect $200"
+  "Value": "MySql"
 }, {
   "Key": 9,
-  "Value": "Go Directly To Jail!"
+  "Value": "Oracle"
 },{
   "Key": 10,
-  "Value": "Roll Die"
+  "Value": "Mokito"
 },{
   "Key": 11,
-  "Value": "Rolled Doubles"
+  "Value": "GAIA"
 },{
   "Key": 12,
-  "Value": "Move Piece"
+  "Value": "JANUS"
 },{
   "Key": 13,
-  "Value": "Is Owned By Someone"
+  "Value": "End"
 },{
   "Key": 14,
-  "Value": "Pay the Piper!"
+  "Value": "Testing"
 },{
   "Key": 15,
-  "Value": "Buy It!"
+  "Value": "Protactor"
 }]

@@ -24,3 +24,25 @@
       top: 56px;
       z-index: 6;
   }
+
+  #sidebar-wrapper ul.list-unstyled.help {
+    font-size: 12px;
+    padding: 5px 5px 5px 22px;
+    color: #ddd;
+}
+#sidebar-wrapper ul.list-unstyled.help li{
+    padding-bottom: 10px;
+}
+
+.popover.bs-popover-auto[x-placement^=right] .arrow, .popover.bs-popover-right .arrow {
+    top: 50px;
+}
+.popover.bs-popover-right.bs-popover-right-docs {
+    right: 54px;
+    top: 116px;
+    left: auto;
+    width: 260px;
+}
+#nodeOptionPopOver{
+    visibility: hidden;
+}

@@ -1,8 +1,19 @@
-document.onload = (function(d3, saveAs, Blob, undefined) {
+/**
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {[type]}
+ * @param  {[type]}
+ * @return {[type]}
+ */
+document.onload = (function (d3, saveAs, Blob, undefined) {
   "use strict";
-
-  // define graphcreator object
-  var GraphCreator = function(svg, nodes, edges) {
+  /**
+   * define graphcreator object
+   * @param {[type]}
+   * @param {[type]}
+   * @param {[type]}
+   */
+  var GraphCreator = function (svg, nodes, edges) {
     var thisGraph = this;
     console.log('thisGraph:');
     console.log(thisGraph);
@@ -63,38 +74,38 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     thisGraph.circles = svgG.append("g").selectAll("g");
 
     thisGraph.drag = d3.behavior.drag()
-      .origin(function(d) {
+      .origin(function (d) {
         // d = selected circle. The drag origin is the origin of the circle
         return {
           x: d.x,
           y: d.y
         };
       })
-      .on("drag", function(args) {
+      .on("drag", function (args) {
         thisGraph.state.justDragged = true;
         thisGraph.dragmove.call(thisGraph, args);
       })
-      .on("dragend", function(args) {
+      .on("dragend", function (args) {
         // args = circle that was dragged
       });
 
     // listen for key events
-    d3.select(window).on("keydown", function() {
-        thisGraph.svgKeyDown.call(thisGraph);
-      })
-      .on("keyup", function() {
+    d3.select(window).on("keydown", function () {
+      thisGraph.svgKeyDown.call(thisGraph);
+    })
+      .on("keyup", function () {
         thisGraph.svgKeyUp.call(thisGraph);
       });
-    svg.on("mousedown", function(d) {
+    svg.on("mousedown", function (d) {
       thisGraph.svgMouseDown.call(thisGraph, d);
     });
-    svg.on("mouseup", function(d) {
+    svg.on("mouseup", function (d) {
       thisGraph.svgMouseUp.call(thisGraph, d);
     });
 
     // listen for dragging
     var dragSvg = d3.behavior.zoom()
-      .on("zoom", function() {
+      .on("zoom", function () {
         console.log('zoom triggered');
         if (d3.event.sourceEvent.shiftKey) {
           // TODO  the internal d3 state is still changing
@@ -104,44 +115,44 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         }
         return true;
       })
-      .on("zoomstart", function() {
+      .on("zoomstart", function () {
         var ael = d3.select("#" + thisGraph.consts.activeEditId).node();
         if (ael) {
           ael.blur();
         }
         if (!d3.event.sourceEvent.shiftKey) d3.select('body').style("cursor", "move");
       })
-      .on("zoomend", function() {
+      .on("zoomend", function () {
         d3.select('body').style("cursor", "auto");
       });
 
     svg.call(dragSvg).on("dblclick.zoom", null);
 
     // listen for resize
-    window.onresize = function() {
+    window.onresize = function () {
       thisGraph.updateWindow(svg);
     };
 
     // help icon click
-    d3.select("#help").on("click", function(){
+    d3.select("#help").on("click", function () {
       $('#helpbox').removeClass('hidden');
     });
 
     // reset zoom
-    d3.select("#reset-zoom").on("click", function(){
+    d3.select("#reset-zoom").on("click", function () {
       d3.select(".graph")
         .transition() // start a transition
-              .duration(1000) // make it last 1 second
-              .attr('transform', "translate(1,0)");
+        .duration(1000) // make it last 1 second
+        .attr('transform', "translate(1,0)");
 
       dragSvg.scale(1);
-      dragSvg.translate([1,0]);
+      dragSvg.translate([1, 0]);
     });
 
     // handle download data
-    d3.select("#download-input").on("click", function() {
+    d3.select("#download-input").on("click", function () {
       var saveEdges = [];
-      thisGraph.edges.forEach(function(val, i) {
+      thisGraph.edges.forEach(function (val, i) {
         saveEdges.push({
           source: val.source.id,
           target: val.target.id
@@ -151,22 +162,23 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         "nodes": thisGraph.nodes,
         "edges": saveEdges
       })], {
-        type: "text/plain;charset=utf-8"
-      });
+          type: "text/plain;charset=utf-8"
+        });
       saveAs(blob, "mydag.json");
     });
 
 
     // handle uploaded data
-    d3.select("#upload-input").on("click", function() {
+
+    d3.select("#upload-input").on("click", function () {
       document.getElementById("hidden-file-upload").click();
     });
-    d3.select("#hidden-file-upload").on("change", function() {
+    d3.select("#hidden-file-upload").on("change", function () {
       if (window.File && window.FileReader && window.FileList && window.Blob) {
         var uploadFile = this.files[0];
         var filereader = new window.FileReader();
 
-        filereader.onload = function() {
+        filereader.onload = function () {
           var txtRes = filereader.result;
           // TODO better error handling
           try {
@@ -175,12 +187,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
             thisGraph.nodes = jsonObj.nodes;
             thisGraph.setIdCt(jsonObj.nodes.length + 1);
             var newEdges = jsonObj.edges;
-            newEdges.forEach(function(e, i) {
+            newEdges.forEach(function (e, i) {
               newEdges[i] = {
-                source: thisGraph.nodes.filter(function(n) {
+                source: thisGraph.nodes.filter(function (n) {
                   return n.id == e.source;
                 })[0],
-                target: thisGraph.nodes.filter(function(n) {
+                target: thisGraph.nodes.filter(function (n) {
                   return n.id == e.target;
                 })[0]
               };
@@ -201,12 +213,15 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     });
 
     // handle delete graph
-    d3.select("#delete-graph").on("click", function() {
+    d3.select("#delete-graph").on("click", function () {
       thisGraph.deleteGraph(false);
     });
   };
 
-  GraphCreator.prototype.setIdCt = function(idct) {
+  /**
+   * @param {idct[type]}
+   */
+  GraphCreator.prototype.setIdCt = function (idct) {
     this.idct = idct;
   };
 
@@ -222,9 +237,12 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     nodeRadius: 50
   };
 
-  /* PROTOTYPE FUNCTIONS */
-
-  GraphCreator.prototype.dragmove = function(d) {
+  /**
+   * PROTOTYPE FUNCTIONS
+   * @param  {d}
+   * @return {void}
+   */
+  GraphCreator.prototype.dragmove = function (d) {
     var thisGraph = this;
     if (thisGraph.state.shiftNodeDrag) {
       thisGraph.dragLine.attr('d', 'M' + d.x + ',' + d.y + 'L' + d3.mouse(thisGraph.svgG.node())[0] + ',' + d3.mouse(this.svgG.node())[1]);
@@ -234,8 +252,11 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       thisGraph.updateGraph();
     }
   };
-
-  GraphCreator.prototype.deleteGraph = function(skipPrompt) {
+  /**
+   * 
+   * @param {*} skipPrompt 
+   */
+  GraphCreator.prototype.deleteGraph = function (skipPrompt) {
     var thisGraph = this,
       doDelete = true;
     if (!skipPrompt) {
@@ -249,7 +270,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
   /* select all text in element: taken from http://stackoverflow.com/questions/6139107/programatically-select-text-in-a-contenteditable-html-element */
-  GraphCreator.prototype.selectElementContents = function(el) {
+  GraphCreator.prototype.selectElementContents = function (el) {
     var range = document.createRange();
     range.selectNodeContents(el);
     var sel = window.getSelection();
@@ -259,7 +280,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   /* insert svg line breaks: taken from http://stackoverflow.com/questions/13241475/how-do-i-include-newlines-in-labels-in-d3-charts */
-  GraphCreator.prototype.insertTitleLinebreaks = function(gEl, title) {
+  GraphCreator.prototype.insertTitleLinebreaks = function (gEl, title) {
     var words = title.split(/\s+/g),
       nwords = words.length;
     var el = gEl.append("text")
@@ -275,17 +296,22 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
 
 
   // remove edges associated with a node
-  GraphCreator.prototype.spliceLinksForNode = function(node) {
+  GraphCreator.prototype.spliceLinksForNode = function (node) {
     var thisGraph = this,
-      toSplice = thisGraph.edges.filter(function(l) {
+      toSplice = thisGraph.edges.filter(function (l) {
         return (l.source === node || l.target === node);
       });
-    toSplice.map(function(l) {
+    toSplice.map(function (l) {
       thisGraph.edges.splice(thisGraph.edges.indexOf(l), 1);
     });
   };
+  /**
+   * 
+   * @param {*} d3Path 
+   * @param {*} edgeData 
+   */
 
-  GraphCreator.prototype.replaceSelectEdge = function(d3Path, edgeData) {
+  GraphCreator.prototype.replaceSelectEdge = function (d3Path, edgeData) {
     var thisGraph = this;
     d3Path.classed(thisGraph.consts.selectedClass, true);
     if (thisGraph.state.selectedEdge) {
@@ -293,8 +319,13 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     }
     thisGraph.state.selectedEdge = edgeData;
   };
+  /**
+   * 
+   * @param {*} d3Node 
+   * @param {*} nodeData 
+   */
 
-  GraphCreator.prototype.replaceSelectNode = function(d3Node, nodeData) {
+  GraphCreator.prototype.replaceSelectNode = function (d3Node, nodeData) {
     // A circle node has been selected.
 
     var thisGraph = this;
@@ -304,52 +335,63 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     }
     thisGraph.state.selectedNode = nodeData;
 
-    d3.json("../assets/js/processes.json", function(error, json){
+    d3.json("../assets/js/processes.json", function (error, json) {
 
-      json = _.sortBy(json, function(d){ return d.Value })
+      json = _.sortBy(json, function (d) { return d.Value })
 
-      if(error){
+      if (error) {
         alert("Error occured while getting processes. Check console for details.");
         console.log(error);
         return;
       }
-
-      var inspector = d3.select("div#sidebar-right").append("div").attr({ id: "inspector"});
+      var popupVisibility = document.getElementById('nodeOptionPopOver').style.visibility;
+      if(popupVisibility && popupVisibility === 'visible'){
+        document.getElementById('nodeOptionPopOver').style.visibility = 'hidden';
+      }else{
+        document.getElementById('nodeOptionPopOver').style.visibility = 'visible';
+      }
+     
+      var inspector = d3.select("div#sidebar-right").append("div").attr({ id: "inspector" });
       var sel = inspector.append("select")
-          .on("change", function(d){
-            // Update thisGraph.nodes and graph text with selected option.
-            var selectedOption = this.options[this.selectedIndex];
-            // selectedOption.value & selectedOption.text
+        .on("change", function (d) {
+          // Update thisGraph.nodes and graph text with selected option.
+          var selectedOption = this.options[this.selectedIndex];
+          // selectedOption.value & selectedOption.text
 
-            d3Node.select("text").remove();
-            thisGraph.insertTitleLinebreaks(d3Node, selectedOption.text);
-            nodeData.eventTypeId = parseInt(selectedOption.value);
-            nodeData.title = selectedOption.text;
+          d3Node.select("text").remove();
+          thisGraph.insertTitleLinebreaks(d3Node, selectedOption.text);
+          nodeData.eventTypeId = parseInt(selectedOption.value);
+          nodeData.title = selectedOption.text;
 
-            // console.log('thisGraph.nodes');
-            // console.log(thisGraph.nodes);
+          // console.log('thisGraph.nodes');
+          // console.log(thisGraph.nodes);
 
-          });
+        });
 
 
       var options = sel.selectAll("option");
 
       options.data(json).enter()
-          .append("option")
-              .attr({value: function(d){ return d.Key }})
-              .text(function(d){ return d.Value })
-          .property("selected", function(d, i){
-                return d.Key === nodeData.eventTypeId;
-          });
+        .append("option")
+        .attr({ value: function (d) { return d.Key } })
+        .text(function (d) { return d.Value })
+        .property("selected", function (d, i) {
+          return d.Key === nodeData.eventTypeId;
+        });
 
     });
   };
 
-  GraphCreator.prototype.removeSelectFromNode = function() {
+  /**
+   * 
+   */
+
+
+  GraphCreator.prototype.removeSelectFromNode = function () {
     // A circle node has been deselected.
 
     var thisGraph = this;
-    thisGraph.circles.filter(function(cd) {
+    thisGraph.circles.filter(function (cd) {
       return cd.id === thisGraph.state.selectedNode.id;
     }).classed(thisGraph.consts.selectedClass, false);
     thisGraph.state.selectedNode = null;
@@ -357,16 +399,25 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     d3.selectAll("div#inspector").remove();
 
   };
+  /**
+   * 
+   */
 
-  GraphCreator.prototype.removeSelectFromEdge = function() {
+  GraphCreator.prototype.removeSelectFromEdge = function () {
     var thisGraph = this;
-    thisGraph.paths.filter(function(cd) {
+    thisGraph.paths.filter(function (cd) {
       return cd === thisGraph.state.selectedEdge;
     }).classed(thisGraph.consts.selectedClass, false);
     thisGraph.state.selectedEdge = null;
   };
 
-  GraphCreator.prototype.pathMouseDown = function(d3path, d) {
+  /**
+   * 
+   * @param {*} d3path 
+   * @param {*} d 
+   */
+
+  GraphCreator.prototype.pathMouseDown = function (d3path, d) {
     var thisGraph = this,
       state = thisGraph.state;
     d3.event.stopPropagation();
@@ -383,16 +434,20 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       thisGraph.removeSelectFromEdge();
     }
   };
-
+  /**
+   * 
+   * @param {*} d3node 
+   * @param {*} d 
+   */
   // mousedown on node
-  GraphCreator.prototype.circleMouseDown = function(d3node, d) {
+  GraphCreator.prototype.circleMouseDown = function (d3node, d) {
     var thisGraph = this,
       state = thisGraph.state;
     d3.event.stopPropagation();
     state.mouseDownNode = d;
 
     if (d3.event.shiftKey) {
-        // Automatically create node when they shift + drag?
+      // Automatically create node when they shift + drag?
       state.shiftNodeDrag = d3.event.shiftKey;
       // reposition dragged directed edge
       thisGraph.dragLine.classed('hidden', false)
@@ -401,8 +456,14 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     }
   };
 
+  /**
+   * 
+   * @param {*} d3node 
+   * @param {*} d 
+   */
+
   // mouseup on nodes
-  GraphCreator.prototype.circleMouseUp = function(d3node, d) {
+  GraphCreator.prototype.circleMouseUp = function (d3node, d) {
     console.log('circle mouse up');
     var thisGraph = this,
       state = thisGraph.state,
@@ -423,7 +484,7 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         source: mouseDownNode,
         target: d
       };
-      var filtRes = thisGraph.paths.filter(function(d) {
+      var filtRes = thisGraph.paths.filter(function (d) {
         if (d.source === newEdge.target && d.target === newEdge.source) {
           thisGraph.edges.splice(thisGraph.edges.indexOf(d), 1);
         }
@@ -442,10 +503,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         // clicked, not dragged
         if (d3.event.shiftKey) {
           // shift-clicked node: edit text content
-        //   var d3txt = thisGraph.changeTextOfNode(d3node, d);
-        //   var txtNode = d3txt.node();
-        //   thisGraph.selectElementContents(txtNode);
-        //   txtNode.focus();
+          //   var d3txt = thisGraph.changeTextOfNode(d3node, d);
+          //   var txtNode = d3txt.node();
+          //   thisGraph.selectElementContents(txtNode);
+          //   txtNode.focus();
 
         } else {
           if (state.selectedEdge) {
@@ -465,14 +526,20 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     return;
 
   }; // end of circles mouseup
-
+  /**
+   * 
+   */
   // mousedown on main svg
-  GraphCreator.prototype.svgMouseDown = function() {
+  GraphCreator.prototype.svgMouseDown = function () {
     this.state.graphMouseDown = true;
   };
 
+  /**
+   * 
+   */
+
   // mouseup on main svg
-  GraphCreator.prototype.svgMouseUp = function() {
+  GraphCreator.prototype.svgMouseUp = function () {
     var thisGraph = this,
       state = thisGraph.state;
     if (state.justScaleTransGraph) {
@@ -499,7 +566,10 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   };
 
   // keydown on main svg
-  GraphCreator.prototype.svgKeyDown = function() {
+  /**
+   * 
+   */
+  GraphCreator.prototype.svgKeyDown = function () {
     var thisGraph = this,
       state = thisGraph.state,
       consts = thisGraph.consts;
@@ -527,28 +597,33 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
         break;
     }
   };
-
-  GraphCreator.prototype.svgKeyUp = function() {
+  /**
+   * 
+   */
+  GraphCreator.prototype.svgKeyUp = function () {
     this.state.lastKeyDown = -1;
   };
 
   // call to propagate changes to graph
-  GraphCreator.prototype.updateGraph = function() {
+  /**
+   * 
+   */
+  GraphCreator.prototype.updateGraph = function () {
 
     var thisGraph = this,
       consts = thisGraph.consts,
       state = thisGraph.state;
 
-    thisGraph.paths = thisGraph.paths.data(thisGraph.edges, function(d) {
+    thisGraph.paths = thisGraph.paths.data(thisGraph.edges, function (d) {
       return String(d.source.id) + "+" + String(d.target.id);
     });
     var paths = thisGraph.paths;
     // update existing paths
     paths.style('marker-end', 'url(#end-arrow)')
-      .classed(consts.selectedClass, function(d) {
+      .classed(consts.selectedClass, function (d) {
         return d === state.selectedEdge;
       })
-      .attr("d", function(d) {
+      .attr("d", function (d) {
         return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
       });
 
@@ -557,13 +632,13 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
       .append("path")
       .style('marker-end', 'url(#end-arrow)')
       .classed("link", true)
-      .attr("d", function(d) {
+      .attr("d", function (d) {
         return "M" + d.source.x + "," + d.source.y + "L" + d.target.x + "," + d.target.y;
       })
-      .on("mousedown", function(d) {
+      .on("mousedown", function (d) {
         thisGraph.pathMouseDown.call(thisGraph, d3.select(this), d);
       })
-      .on("mouseup", function(d) {
+      .on("mouseup", function (d) {
         state.mouseDownLink = null;
       });
 
@@ -571,36 +646,36 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     paths.exit().remove();
 
     // update existing nodes
-    thisGraph.circles = thisGraph.circles.data(thisGraph.nodes, function(d) {
+    thisGraph.circles = thisGraph.circles.data(thisGraph.nodes, function (d) {
       return d.id;
     });
-    thisGraph.circles.attr("transform", function(d) {
+    thisGraph.circles.attr("transform", function (d) {
       return "translate(" + d.x + "," + d.y + ")";
     });
 
     // add new nodes
     var newGs = thisGraph.circles.enter()
       .append("g")
-        .attr({"id": function(d){ return generateUUID(); }});
+      .attr({ "id": function (d) { return generateUUID(); } });
 
     newGs.classed(consts.circleGClass, true)
-      .attr("transform", function(d) {
+      .attr("transform", function (d) {
         return "translate(" + d.x + "," + d.y + ")";
       })
-      .on("mouseover", function(d) {
+      .on("mouseover", function (d) {
         if (state.shiftNodeDrag) {
           d3.select(this).classed(consts.connectClass, true);
         }
       })
-      .on("mouseout", function(d) {
+      .on("mouseout", function (d) {
         d3.select(this).classed(consts.connectClass, false);
       })
-      .on("mousedown", function(d) {
+      .on("mousedown", function (d) {
         console.log('on mouse down d:');
         console.log(d);
         thisGraph.circleMouseDown.call(thisGraph, d3.select(this), d);
       })
-      .on("mouseup", function(d) {
+      .on("mouseup", function (d) {
         thisGraph.circleMouseUp.call(thisGraph, d3.select(this), d);
       })
       .call(thisGraph.drag);
@@ -608,24 +683,29 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
     newGs.append("circle")
       .attr("r", String(consts.nodeRadius));
 
-    newGs.each(function(d) {
+    newGs.each(function (d) {
       thisGraph.insertTitleLinebreaks(d3.select(this), d.title);
     });
 
     // remove old nodes
     thisGraph.circles.exit().remove();
   };
-
-  GraphCreator.prototype.zoomed = function() {
+  /**
+   * 
+   */
+  GraphCreator.prototype.zoomed = function () {
     this.state.justScaleTransGraph = true;
     d3.select("." + this.consts.graphClass)
       .attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
   };
-
-  GraphCreator.prototype.updateWindow = function(svg) {
+  /**
+   * 
+   * @param {*} svg 
+   */
+  GraphCreator.prototype.updateWindow = function (svg) {
     var docEl = document.documentElement,
       bodyEl = document.getElementById('container');
-    var x = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth;
+    var x = bodyEl.clientWidth || window.innerWidth || docEl.clientWidth;
     var y = window.innerHeight || docEl.clientHeight || bodyEl.clientHeight;
     svg.attr("width", x).attr("height", y);
   };
@@ -635,18 +715,18 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   /**** MAIN ****/
 
   // warn the user when leaving
-  window.onbeforeunload = function() {
-    //return "Make sure to save your graph locally before leaving :-)";
+  window.onbeforeunload = function () {
+    return "Make sure to save your graph locally before leaving :-)";
   };
 
   var docEl = document.documentElement,
     bodyEl = document.getElementById('container');
 
-  var width = window.innerWidth || docEl.clientWidth || bodyEl.clientWidth,
+  var width = bodyEl.clientWidth || docEl.clientWidth || window.innerWidth,
     height = window.innerHeight || docEl.clientHeight || bodyEl.clientHeight;
 
   var xLoc = 100,
-      yLoc = 100;
+    yLoc = 100;
 
 
   // initial node data
@@ -659,8 +739,8 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   }, {
     title: "Step 1",
     id: 1,
-    x: xLoc+200,
-    y: yLoc ,
+    x: xLoc + 200,
+    y: yLoc,
     eventTypeId: null
   }];
   var edges = [{
@@ -676,13 +756,15 @@ document.onload = (function(d3, saveAs, Blob, undefined) {
   graph.setIdCt(2);
   graph.updateGraph();
 })(window.d3, window.saveAs, window.Blob);
-
+/**
+ * 
+ */
 function generateUUID() {
-    var d = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (d + Math.random()*16)%16 | 0;
-        d = Math.floor(d/16);
-        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-    });
-    return uuid;
+  var d = new Date().getTime();
+  var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = (d + Math.random() * 16) % 16 | 0;
+    d = Math.floor(d / 16);
+    return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+  return uuid;
 };

@@ -1,53 +1,51 @@
 <div id="wrapper">
-    
+
   <!-- Sidebar -->
-  <div id="sidebar-wrapper"  *ngIf="isSidebar">
-      <div id="sidebar-right"></div>
+  <div id="sidebar-wrapper" *ngIf="isSidebar">
+    
+   
+    <ul class="list-unstyled help">
+      <li>
+        <strong>Shift + Click</strong> anywhere on the screen (white space) to create a new node.</li>
+      <li>
+        <strong>Shift + Click + Dragging</strong> from one node to another will create a one way connection between them.</li>
+      <li>
+        <strong>Left Clicking</strong> on a node will select it and bring up the inspector on the right hand side, where you can
+        change the event associated with it.</li>
+      <li>
+        <strong>Left Clicking + Dragging</strong> on a node will reposition it.</li>
+      <li>Selecting a node and pressing
+        <strong>Delete</strong> or
+        <strong>Backspace</strong> will delete the node and any connections to and from it.</li>
+      <li>Similarly, selecting a connection and pressing
+        <strong>Delete</strong> or
+        <strong>Backspace</strong> will remove the connection.</li>
+      <li>
+        <strong>Mouse Wheel Up</strong> and
+        <strong>Mouse Wheel Down</strong> will zoom the graph accordingly.</li>
+      </ul>
   </div>
   <!-- /#sidebar-wrapper -->
   <!-- Page Content -->
   <div id="page-content-wrapper">
-      <div class="sidebar-toggle">
-          <span (click)="switchSidebar()"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-          </span>
-        </div>
+    <div class="sidebar-toggle">
+      <span (click)="switchSidebar()">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+      </span>
+    </div>
     <div class="container-fluid">
-      <div id="container"></div>
-      
+      <div id="container" class="graph-paper"></div>
+
     </div>
   </div>
   <!-- /#page-content-wrapper -->
 </div>
 
-
-<!-- 
-  <div id="toolbox">
-    <input type="file" id="hidden-file-upload">
-    <input id="help" type="image" title="help" src="./assets/images/help-icon.png" alt="help">
-    <input id="reset-zoom" type="image" title="reset zoom" src="./assets/images/reset-zoom-icon.png" alt="reset zoom">
-    <input id="upload-input" type="image" title="upload graph" src="./assets/images/upload-icon.png" alt="upload graph">
-    <input type="image" id="download-input" title="download graph" src="./assets/images/download-icon.png" alt="download graph">
-    <input type="image" id="delete-graph" title="delete graph" src="./assets/images/trash-icon.png" alt="delete graph">
+<div class="popover bs-popover-right bs-popover-right-docs" id="nodeOptionPopOver">
+  <div class="arrow"></div>
+  <h3 class="popover-header">Selected Node Option</h3>
+  <div class="popover-body">
+    <div id="sidebar-right"></div>
+    <p>Select option.</p>
   </div>
-  
-  <div id="helpbox" class="hidden">
-    <li>
-      <strong>Shift + Click</strong> anywhere on the screen (white space) to create a new node.</li>
-    <li>
-      <strong>Shift + Click + Dragging</strong> from one node to another will create a one way connection between them.</li>
-    <li>
-      <strong>Left Clicking</strong> on a node will select it and bring up the inspector on the right hand side, where you can change
-      the event associated with it.</li>
-    <li>
-      <strong>Left Clicking + Dragging</strong> on a node will reposition it.</li>
-    <li>Selecting a node and pressing
-      <strong>Delete</strong> or
-      <strong>Backspace</strong> will delete the node and any connections to and from it.</li>
-    <li>Similarly, selecting a connection and pressing
-      <strong>Delete</strong> or
-      <strong>Backspace</strong> will remove the connection.</li>
-    <li>
-      <strong>Mouse Wheel Up</strong> and
-      <strong>Mouse Wheel Down</strong> will zoom the graph accordingly.</li>
-  </div>
-  <script>$('#helpbox').click(function () { $(this).addClass('hidden'); })</script> -->
+</div>
